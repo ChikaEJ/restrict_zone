@@ -23,3 +23,7 @@ def load_zones(path: str):
 def point_in_poly(pt: Tuple[int,int], poly_points: List[Tuple[int,int]]):
     contour = np.array(poly_points, dtype=np.int32)
     return cv2.pointPolygonTest(contour, pt, False) >= 0
+
+def save_zones(path: str, zones):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"zones": zones}, f, ensure_ascii=False, indent=2)
