@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  yolo-tracker:
+    build: .
+    container_name: yolo_deepsort
+    volumes:
+      - .:/app
+      - ./videos:/app/videos
+      - ./output:/app/output
+    env_file:
+      - .env
+    command: python -m app.main
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
