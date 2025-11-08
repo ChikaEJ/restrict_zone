@@ -1,4 +1,5 @@
 import json
+from typing import List, Tuple
 
 import cv2
 import numpy as np
@@ -18,3 +19,7 @@ def load_zones(path: str):
         return data.get("zones", [])
     except FileNotFoundError:
         return []
+
+def point_in_poly(pt: Tuple[int,int], poly_points: List[Tuple[int,int]]):
+    contour = np.array(poly_points, dtype=np.int32)
+    return cv2.pointPolygonTest(contour, pt, False) >= 0
