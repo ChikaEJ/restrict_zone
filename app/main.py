@@ -1,12 +1,11 @@
-import os
-
 import cv2
 
 from app.alarm_manager import AlarmManager
 from app.detector import YoloDetector
 from app.core.config import settings
 from app.tracker import TrackerWrapper
-from app.utils import draw_zones, load_zones, point_in_poly
+from app.utils import create_video_writer, draw_zones, load_zones, \
+    point_in_poly
 
 
 def main():
@@ -17,14 +16,7 @@ def main():
     zones = load_zones(settings.ZONES_FILE)
     alarm = AlarmManager(settings.ALARM_COOLDOWN_SECONDS)
 
-    writer = None
-    if settings.SAVE_OUTPUT:
-        os.makedirs(settings.OUTPUT_PATH, exist_ok=True)
-        out_file = os.path.join(settings.OUTPUT_PATH, "output.avi")
-        fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        writer = cv2.VideoWriter(out_file, fourcc, fps, (width, height))
+    writer, out_file = create_video_writer(capture, settings.OUTPUT_PATH, "output.avi", fps)
 
     while True:
         ret, frame = capture.read()
@@ -76,7 +68,7 @@ def main():
             cv2.putText(frame, "!!! alarm !!!", (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 4)
 
-        cv2.imshow("Intrusion Monitor", frame)
+        cv2.imshow("Тестовое видео", frame)
         if writer:
             writer.write(frame)
 

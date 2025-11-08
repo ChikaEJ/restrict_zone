@@ -1,4 +1,5 @@
 import json
+import os
 from typing import List, Tuple
 
 import cv2
@@ -27,3 +28,15 @@ def point_in_poly(pt: Tuple[int,int], poly_points: List[Tuple[int,int]]):
 def save_zones(path: str, zones):
     with open(path, "w", encoding="utf-8") as f:
         json.dump({"zones": zones}, f, ensure_ascii=False, indent=2)
+
+def create_video_writer(capture, output_path: str, filename: str = "output.avi", fps: float = 25.0):
+
+    os.makedirs(output_path, exist_ok=True)
+    out_file = os.path.join(output_path, filename)
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    writer = cv2.VideoWriter(out_file, fourcc, fps, (width, height))
+    return writer, out_file
