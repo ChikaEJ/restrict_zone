@@ -3,28 +3,14 @@ version: '3.9'
 services:
   yolo-tracker:
     build: .
-    container_name: yolo_deepsort_gpu
+    container_name: yolo_deepsort
     volumes:
       - .:/app
       - ./videos:/app/videos
       - ./output:/app/output
-    environment:
-      - YOLO_MODEL=app/models/yolov8n.pt
-      - VIDEO_SOURCE=/app/videos/input.mp4
-      - OUTPUT_PATH=/app/output
-      - CONFIDENCE=0.5
-      - USE_DEEPSORT=True
-      - ZONES_FILE=app/zones.json
-      - ALARM_COOLDOWN_SECONDS=5
-    command: python3 -m app.main
+    env_file:
+      - .env
+    command: python -m app.main
     restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-            - count: all
-            - capabilities: [gpu]
-    runtime: nvidia
     stdin_open: true
     tty: true
