@@ -1,0 +1,20 @@
+import json
+
+import cv2
+import numpy as np
+
+
+def draw_zones(frame, zones):
+    for z in zones:
+        pts = np.array(z["points"], dtype=np.int32)
+        cv2.polylines(frame, [pts], isClosed=True, color=(0,0,255), thickness=2)
+        x, y = pts[0]
+        cv2.putText(frame, z.get("name", z["id"]), (x+5, y-5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,0,255), 2)
+
+def load_zones(path: str):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get("zones", [])
+    except FileNotFoundError:
+        return []
