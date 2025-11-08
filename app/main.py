@@ -5,25 +5,24 @@ from app.core.config import settings
 
 
 def main():
-    print('Start')
     detector = YoloDetector(model_path=settings.YOLO_MODEL, conf=0.4)
-    print('Detected')
     capture = cv2.VideoCapture(settings.VIDEO_SOURCE)
-    print('Start While Loop')
     i = 0
     while True:
         i = i + 1
-        print(f"Loop{i}")
         ret, frame = capture.read()
-        print(f"{ret=}")
         if not ret:
             break
 
         detections = detector.detect(frame)
-        print(f"{detections=}")
+        person_detections = []
         for detection in detections:
-            if detection:
-                print(detection['name'])
+            if detection["name"] == "person":
+                x1, y1, x2, y2 = detection["xyxy"]
+                width = x2 - x1
+                height = y2 - y1
+                person_detections.append([[x1, y1, width, height], detection["conf"], "person"])
+                print(person_detections)
 
 if __name__ == '__main__':
     main()
